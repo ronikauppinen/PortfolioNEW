@@ -1,0 +1,837 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Roni Kauppinen</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        :root {
+            --background: #080808;
+            --text: #f5f5f5;
+            --muted: #888;
+            --border: rgba(255, 255, 255, 0.1);
+
+            --mouse-x: 50vw;
+            --mouse-y: 50vh;
+            --opposite-x: 50vw;
+            --opposite-y: 50vh;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background: var(--background);
+            color: var(--text);
+            font-family: "DM Sans", sans-serif;
+            overflow-x: hidden;
+        }
+
+
+    /* =========================
+            GRADIENT
+    ========================= */
+
+        .ambient {
+            position: fixed;
+            inset: -30%;
+            z-index: -2;
+            overflow: hidden;
+            pointer-events: none;
+            filter: blur(80px);
+        }
+        .cloud {
+            position: absolute;
+            width: 75vw;
+            height: 75vw;
+            min-width: 600px;
+            min-height: 600px;
+            border-radius: 50%;
+            will-change: transform, background;
+        }
+        .cloud-1 {
+            background: rgba(115, 65, 241, 0.32);
+        }
+        .cloud-2 {
+            background: rgba(0, 210, 255, 0.25);
+        }
+        .cloud-3 {
+            background: rgba(255, 0, 200, 0.25);
+        }
+        .noise {
+            position: fixed;
+            inset: -50%;
+            z-index: 20;
+            pointer-events: none;
+            opacity: 0.035;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+            animation: noise 0.18s steps(2) infinite;
+        }
+        @keyframes noise {
+            0% {
+                transform: translate(0, 0);
+            }
+            20% {
+                transform: translate(-3%, 2%);
+            }
+            40% {
+                transform: translate(2%, -4%);
+            }
+            60% {
+                transform: translate(4%, 3%);
+            }
+            80% {
+                transform: translate(-2%, -3%);
+            }
+            100% {
+                transform: translate(3%, 1%);
+            }
+        }
+
+
+    /* =========================
+            CURSOR
+    ========================= */
+
+        .cursor-lens {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 100;
+            transform:
+            translate(-50%, -50%);
+            background: white;
+            mix-blend-mode: difference;
+            transition:
+             width 0.1s ease,
+             height 0.1s ease;
+            will-change: left, top;
+        }
+
+    /* =========================
+           NAVIGATION
+    ========================= */
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6vw;
+            z-index: 10;
+            background: rgba(8, 8, 8, 0.35);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .logo {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.03em;
+        }
+        nav ul {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+        nav a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 14px;
+
+            transition: color 0.2s ease;
+        }
+        nav a:hover {
+            color: white;
+        }
+
+
+    /* =========================
+           GENERAL
+    ========================= */
+
+        section {
+            padding: 140px 8vw;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+
+    /* =========================
+           HERO
+    ========================= */
+
+        .hero {
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+        }
+        .hero-content {
+            max-width: 950px;
+        }
+        h1 {
+            font-size: clamp(60px, 9vw, 140px);
+            line-height: 0.9;
+            letter-spacing: -0.07em;
+            font-weight: 600;
+        }
+        .hero-description {
+            max-width: 550px;
+            margin-top: 40px;
+            font-size: 18px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.719);
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 12px;
+
+            margin-top: 40px;
+        }
+        .button {
+            display: inline-flex;
+            align-items: center;
+            padding: 13px 20px;
+            border-radius: 100px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+        }
+        .button-primary {
+            background: white;
+            color: black;
+        }
+        .button-secondary {
+            border: 1px solid var(--border);
+            color: white;
+            background: rgba(255,255,255,0.03);
+        }
+
+
+    /* =========================
+           SECTION HEADERS
+    ========================== */
+
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 60px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+        }
+        .section-title {
+            font-size: 32px;
+            letter-spacing: -0.04em;
+        }
+        .section-number {
+            color: rgba(255, 255, 255, 0.68);
+            font-size: 13px;
+        }
+
+
+    /* =========================
+           PROJECTS
+    ========================= */
+
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .project {
+            position: relative;
+            min-height: 420px;
+            padding: 30px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: rgba(10, 10, 10, 0.35);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            overflow: hidden;
+            color: rgba(255, 255, 255, 0.719);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition:
+                transform 0.3s ease,
+                border-color 0.3s ease;
+        }
+        .project:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255,255,255,0.25);
+        }
+        .project-number {
+            color: rgba(255, 255, 255, 0.719);
+            font-size: 13px;
+        }
+        .project h3 {
+            font-size: 30px;
+            letter-spacing: -0.04em;
+        }
+        .project p {
+            color: rgba(255, 255, 255, 0.719);
+            line-height: 1.6;
+            max-width: 450px;
+            margin-top: 12px;
+        }
+        .technologies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+
+            margin-top: 24px;
+        }
+        .technology {
+            padding: 7px 11px;
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.884);
+        }
+
+
+    /* =========================
+           ABOUT
+    ========================= */
+
+        .about {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 80px;
+        }
+        .about-label {
+            color: rgba(255, 255, 255, 0.68);
+            font-size: 13px;
+        }
+        .about-text {
+            font-size: clamp(25px, 3vw, 42px);
+            line-height: 1.2;
+            letter-spacing: -0.04em;
+        }
+        .about-text span {
+            color: rgba(255, 255, 255, 0.68);
+        }
+        .about-text {
+            font-size: clamp(25px, 3vw, 42px);
+            line-height: 1.2;
+            letter-spacing: -0.04em;
+        }
+        .word-wrapper {
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            vertical-align: bottom;
+            height: 1.2em;
+            color: white;
+        }
+        .word {
+            display: block;
+            transition:
+             transform 0.6s cubic-bezier(.76, 0, .24, 1),
+             opacity 0.6s ease;
+        }
+        .about-stats {
+            max-width: 1200px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            margin-top: 80px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .stat {
+            display: flex;
+            flex-direction: column;
+            padding: 30px 0;
+            min-height: 150px;
+        }
+        .stat + .stat {
+            border-left: 1px solid var(--border);
+            padding-left: 30px;
+        }
+        .stat-number {
+            font-size: clamp(42px, 5vw, 70px);
+            line-height: 1;
+            letter-spacing: -0.06em;
+        }
+        .stat-label {
+            margin-top: 18px;
+            color: rgba(255, 255, 255, 0.68);
+            font-size: 13px;
+            line-height: 1.4;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+    /* =========================
+           SKILLS
+    ========================= */
+
+        .skills {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            border: 1px solid var(--border);
+        }
+        .skill {
+            padding: 30px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.015);
+        }
+        .skill h3 {
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        .skill p {
+            color: rgba(255, 255, 255, 0.68);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+    /* =========================
+           CONTACT
+    ========================= */
+
+        .contact {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .contact h2 {
+            font-size: clamp(60px, 10vw, 150px);
+            line-height: 0.9;
+            letter-spacing: -0.07em;
+        }
+        .contact p {
+            margin-top: 30px;
+            color: rgba(255, 255, 255, 0.68);
+            font-size: 18px;
+        }
+
+    /* =========================
+           FOOTER
+    ========================= */
+
+        footer {
+            padding: 30px 8vw;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--border);
+            color: rgba(255, 255, 255, 0.68);
+            font-size: 13px;
+        }
+
+    /* =========================
+           MOBILE
+    ========================= */
+
+        @media (max-width: 700px) {
+            .ambient {
+                inset: -60%;
+                filter: blur(70px);
+            }
+            .cloud {
+                width: 100vw;
+                height: 100vw;
+                min-width: 500px;
+                min-height: 500px;
+            }
+            nav {
+                padding: 0 5vw;
+            }
+            nav ul {
+                display: none;
+            }
+            section {
+                padding: 100px 5vw;
+            }
+            .projects {
+                grid-template-columns: 1fr;
+            }
+            .about {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .skills {
+                grid-template-columns: 1fr;
+            }
+            .hero-description {
+                font-size: 16px;
+            }
+            footer {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+        @media (hover: none) and (pointer: coarse) {
+            .cursor-lens {
+                display: none;
+            }
+        }
+        @media (max-width: 700px) {
+
+.about-stats {
+    grid-template-columns: 1fr;
+}
+
+.stat + .stat {
+    border-left: none;
+    border-top: 1px solid var(--border);
+
+    padding-left: 0;
+}
+
+}
+
+    </style>
+</head>
+
+
+<body>
+    <!-- GRADIENT -->
+    <!-- Peeking on my code? that's ok and actually kinda fun, let know if you find the emoji hidden in a comments -->
+    <div class="ambient">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+    </div>
+    <div class="noise"></div>
+    <div class="cursor-lens"></div>
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="logo">KAUPPINEN</div>
+        <ul>
+            <li><a href="#work">Work</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO -->
+    <main>
+        <section class="hero" data-color1="130, 80, 255" data-color2="0, 210, 255">
+            <div class="container hero-content">
+                <h1>Developer<br>& Designer<br>& Artist</h1>
+                <p class="hero-description">Designed like art. Built like software</p>
+                <div class="hero-buttons">
+                    <a href="#work" class="button button-primary">View my work</a>
+                    <a href="#contact" class="button button-secondary">Get in touch</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJETS -->
+        <section id="work" data-color1="255, 90, 140" data-color2="255, 170, 60">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Selected work</h2>
+                    <span class="section-number">01</span>
+                </div>
+                <div class="projects">
+                    <article class="project">
+                        <span class="project-number">01</span>
+                        <div>
+                            <h3>Landing page 2026</h3>
+                            <p>A landing page for a business to display information, pictures and a contact form. 
+                                The project required the initial design of the website, coding, publishing and domain management.</p>
+                            <div class="technologies">
+                                <span class="technology">HTML</span>
+                                <span class="technology">JS and CSS</span>
+                                <span class="technology">GitHub</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project">
+                        <span class="project-number">02</span>
+                        <div>
+                            <h3>Dog training app Tassu 2023</h3>
+                            <p>Tassu is a dog training app, our team developed as a part of Ticorporate. 
+                                I was in charge of UI/UX design, graphics, as well as working on frontend development and testing. </p>
+                            <div class="technologies">
+                                <span class="technology">Svelte</span>
+                                <span class="technology">Figma</span>
+                                <span class="technology">Cypress</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ABOUT -->
+        <section id="about" data-color1="70, 150, 255" data-color2="170, 80, 255">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">About me</h2>
+                    <span class="section-number">02</span>
+                </div>
+                <div class="about">
+                    <div class="about-label">A little bit about me</div>
+                    <div class="about-text">
+                        I enjoy building digital spaces that make people
+                        <span class="word-wrapper">
+                            <span class="word">feel something</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="about-stats">
+                <div class="stat">
+                    <span class="stat-number">2+</span>
+                    <span class="stat-label">Years working<br>as a systems specialist</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">6+</span>
+                    <span class="stat-label">years of<br>writing code</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">∞</span>
+                    <span class="stat-label">Things still<br>left to learn</span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SKILLS -->
+        <section id="skills" data-color1="80, 220, 170" data-color2="50, 130, 255">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Skills</h2>
+                    <span class="section-number">03</span>
+                </div>
+                <div class="skills">
+                    <div class="skill">
+                        <h3>Frontend</h3>
+                        <p>HTML, CSS, tailwind, Bootstrap, JavaScript, JQuery, React, Svelte and responsive and accessible interfaces.</p>
+                    </div>
+                    <div class="skill">
+                        <h3>Backend</h3>
+                        <p>Node.js, SQL, PHP, APIs, databases and server architecture.</p>
+                    </div>
+                    <div class="skill">
+                        <h3>Design</h3>
+                        <p>UI/UX, Figma, typography, visual systems and interaction design.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- CONTACT -->
+        <section id="contact" class="contact" data-color1="255, 100, 70" data-color2="180, 60, 255">
+            <div class="container">
+                <span class="section-number">04 — CONTACT</span>
+                <h2>Let's build<br>something.</h2>
+                <p>Have some project in mind? I'd love to hear about it.</p>
+                <div class="hero-buttons">
+                    <a href="mailto:ronikauppinen01@gmail.com"class="button button-primary"> Get in touch</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <footer>
+        <span>© 2026 KAUPPINEN</span>
+        <span>Built with code</span>
+    </footer>
+
+<script>
+
+/* =========================
+       CURSOR
+========================= */
+
+const cursor = document.querySelector(".cursor-lens");
+
+let cursorX = window.innerWidth / 2;
+let cursorY = window.innerHeight / 2;
+
+let cursorCurrentX = cursorX;
+let cursorCurrentY = cursorY;
+
+window.addEventListener("mousemove", (e) => {
+    cursorX = e.clientX;
+    cursorY = e.clientY;
+});
+
+function animateCursor() {
+    cursorCurrentX += (cursorX - cursorCurrentX) * 0.15;
+    cursorCurrentY += (cursorY - cursorCurrentY) * 0.15;
+
+    cursor.style.left = `${cursorCurrentX}px`;
+    cursor.style.top = `${cursorCurrentY}px`;
+
+    requestAnimationFrame(animateCursor);
+}
+
+animateCursor();
+document.querySelectorAll("a, button, .project").forEach(element => {
+    element.addEventListener("mouseenter", () => {
+        cursor.style.width = "180px";
+        cursor.style.height = "180px";
+    });
+    element.addEventListener("mouseleave", () => {
+        cursor.style.width = "120px";
+        cursor.style.height = "120px";
+    });
+});
+
+
+/* =========================
+       ANIMATION
+========================= */
+
+const cloud1 = document.querySelector(".cloud-1");
+const cloud2 = document.querySelector(".cloud-2");
+const cloud3 = document.querySelector(".cloud-3");
+
+const sections = document.querySelectorAll("section");
+
+let targetColor1 = [130, 80, 255];
+let targetColor2 = [0, 210, 255];
+
+let currentColor1 = [...targetColor1];
+let currentColor2 = [...targetColor2];
+
+let time = Math.random() * 100;
+
+function lerp(a, b, amount) {
+    return a + (b - a) * amount;
+}
+
+function updateSectionColors() {
+
+    let closestSection = sections[0];
+    let closestDistance = Infinity;
+
+    sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        const distance = Math.abs(
+            rect.top + rect.height / 2 -
+            window.innerHeight / 2
+        );
+        if (distance < closestDistance) {
+            closestDistance = distance;
+            closestSection = section;
+        }
+    });
+
+    targetColor1 = closestSection.dataset.color1.split(",").map(Number);
+    targetColor2 = closestSection.dataset.color2.split(",").map(Number);
+}
+
+window.addEventListener("scroll", updateSectionColors);
+
+updateSectionColors();
+
+
+function animateBackground() {
+    time += 0.005;
+
+    /*  Cloud 1 */
+
+    const x1 = Math.sin(time * 0.7) * 35 + Math.sin(time * 0.31) * 15;
+    const y1 = Math.cos(time * 0.53) * 30 + Math.sin(time * 0.21) * 20;
+
+    /*  Cloud 2 */
+
+    const x2 = Math.cos(time * 0.41) * 35 + Math.sin(time * 0.17) * 20;
+    const y2 = Math.sin(time * 0.63) * 30 + Math.cos(time * 0.27) * 15;
+
+    /*  Cloud 3 */
+
+    const x3 = Math.cos(time * 0.55) * 35 + Math.sin(time * 0.76) * 20;
+    const y3 = Math.sin(time * 0.34) * 30 + Math.cos(time * 0.23) * 15;
+
+    cloud1.style.transform = `translate(${x1}vw, ${y1}vh)`;
+    cloud2.style.transform = `translate(${x2}vw, ${y2}vh)`;
+    cloud3.style.transform = `translate(${x3}vw, ${y3}vh)`;
+
+    for (let i = 0; i < 3; i++) {
+
+        currentColor1[i] = lerp(
+            currentColor1[i],
+            targetColor1[i],
+            0.01
+        );
+        currentColor2[i] = lerp(
+            currentColor2[i],
+            targetColor2[i],
+            0.01
+        );
+    }
+
+
+    cloud1.style.background = `rgb(${currentColor1.join(",")})`;
+    cloud2.style.background = `rgb(${currentColor2.join(",")})`;
+    cloud3.style.background = `rgb(${currentColor2.join(",")})`;
+
+    requestAnimationFrame(animateBackground);
+}
+
+animateBackground();
+const words = [
+    "feel something",
+    "feel curious",
+    "feel immersed",
+    "feel understood",
+    "feel excited"
+];
+
+const wordElement = document.querySelector(".word");
+
+let wordIndex = 0;
+
+setInterval(() => {
+    wordIndex = (wordIndex + 1) % words.length;
+    wordElement.style.transform = "translateY(-100%)";
+    wordElement.style.opacity = "0";
+
+    setTimeout(() => {
+        wordElement.textContent = words[wordIndex];
+        wordElement.style.transition = "none";
+        wordElement.style.transform = "translateY(100%)";
+
+        requestAnimationFrame(() => {
+            wordElement.style.transition =
+                "transform 0.6s cubic-bezier(.76, 0, .24, 1), opacity 0.6s ease";
+            wordElement.style.transform = "translateY(0)";
+            wordElement.style.opacity = "1";
+        });
+    }, 600);
+}, 3000);
+
+</script>
+
+</body>
+</html>
+
