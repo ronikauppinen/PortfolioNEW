@@ -640,7 +640,10 @@
     <main>
         <section class="hero" data-color1="130, 80, 255" data-color2="0, 210, 255">
             <div class="container hero-content">
-                <h1>Developer<br>& Designer<br>& Artist</h1>
+                <h1>Developer<br>& Designer<br>
+                    <span class="word-wrapper">
+                    <span class="introWord">& Artist</span>
+                </h1>
                 <p class="hero-description">Designed like art. Built like software</p>
                 <div class="hero-buttons">
                     <a href="#work" class="button button-primary">View my work</a>
@@ -906,17 +909,14 @@ function animateBackground() {
     time += 0.005;
 
     /*  Cloud 1 */
-
     const x1 = Math.sin(time * 0.7) * 35 + Math.sin(time * 0.31) * 15;
     const y1 = Math.cos(time * 0.53) * 30 + Math.sin(time * 0.21) * 20;
 
     /*  Cloud 2 */
-
     const x2 = Math.cos(time * 0.41) * 35 + Math.sin(time * 0.17) * 20;
     const y2 = Math.sin(time * 0.63) * 30 + Math.cos(time * 0.27) * 15;
 
     /*  Cloud 3 */
-
     const x3 = Math.cos(time * 0.55) * 35 + Math.sin(time * 0.76) * 20;
     const y3 = Math.sin(time * 0.34) * 30 + Math.cos(time * 0.23) * 15;
 
@@ -954,8 +954,15 @@ const words = [
     "feel understood",
     "feel excited"
 ];
+const words2 = [
+    "& Artist",
+    "& Engineer",
+    "& Architect", 
+    "& Specialist"
+];
 
 const wordElement = document.querySelector(".word");
+const IntroWord = document.querySelector(".introWord");
 
 let wordIndex = 0;
 
@@ -976,6 +983,25 @@ setInterval(() => {
             wordElement.style.opacity = "1";
         });
     }, 600);
+}, 3000);
+
+setInterval(() => {
+    wordIndex = (wordIndex) % words2.length;
+    IntroWord.style.transform = "translateY(-100%)";
+    IntroWord.style.opacity = "0";
+
+    setTimeout(() => {
+        IntroWord.textContent = words2[wordIndex];
+        IntroWord.style.transition = "none";
+        IntroWord.style.transform = "translateY(100%)";
+
+        requestAnimationFrame(() => {
+            IntroWord.style.transition =
+                "transform 0.6s cubic-bezier(.76, 0, .24, 1), opacity 0.6s ease";
+            IntroWord.style.transform = "translateY(0)";
+            IntroWord.style.opacity = "1";
+        });
+    }, 800);
 }, 3000);
 
 </script>
